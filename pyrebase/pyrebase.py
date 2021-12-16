@@ -23,6 +23,8 @@ import python_jwt as jwt
 from Crypto.PublicKey import RSA
 import datetime
 
+# For version checking
+import pkg_resources
 
 def initialize_app(config):
     return Firebase(config)
@@ -88,7 +90,20 @@ class Auth:
 
     def create_custom_token(self, uid, additional_claims=None):
         service_account_email = self.credentials.service_account_email
-        private_key = RSA.importKey(self.credentials._private_key_pkcs8_pem)
+
+        # Instatruck change: When using python-jyt 3 or above, the signing algorithm has changed.
+        # Therefore the private key must be generated in another way
+        jwt_version = 2
+        jwt_version_string = pkg_resources.get_distribution("python-jwt").version
+        jwt_version = int(jwt_version_string.split('.')[0])
+        if jwt_version < 3:
+            # Original way
+            private_key = RSA.importKey(self.credentials._private_key_pkcs8_pem)
+        else:
+            # New way: Create a JWK from the PEM as the private_key
+            from jwcrypto import jwk
+            private_key = jwk.JWK.from_pem(bytes(self.credentials._private_key_pkcs8_pem, 'utf-8'))
+
         payload = {
             "iss": service_account_email,
             "sub": service_account_email,
