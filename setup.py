@@ -11,7 +11,7 @@ setup(
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.10',
     ],
     keywords='Firebase',
     packages=find_packages(exclude=['tests']),
@@ -19,7 +19,7 @@ setup(
         'requests<3.0.0dev,>=2.23.0',
         'gcloud==0.17.0',
         'oauth2client==4.1.3',
-        'requests_toolbelt==0.7.0',
+        'requests_toolbelt==0.10.1', # Instatruck note: This is as high as this can go without breaking Pyrebase
         'python_jwt<4.0.0,>=2.0.1',
         'pycryptodome==3.7.3'
     ]
